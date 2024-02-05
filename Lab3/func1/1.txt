@@ -1,0 +1,8 @@
+def grams_to_ounces(grams):
+    o = g / 28.3495231
+    return o
+
+g = float(input("Введите количество граммов: "))
+
+o = grams_to_ounces(g)
+print(f"{g} граммов равно {o:.2f} унциям.")

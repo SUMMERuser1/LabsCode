@@ -1,0 +1,14 @@
+class StrUp:
+    def first(self):
+        self.inputStr= ""
+
+    def getString(self):
+        self.inputStr = input("Enter a string: ")
+
+    def printString(self):
+        print(self.inputStr.upper())
+
+if __name__ == "__main__":
+    sp = StrUp()
+    sp.getString()  
+    sp.printString()  

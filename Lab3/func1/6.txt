@@ -1,0 +1,8 @@
+def r(s):
+    w = s.split()  
+    w.reverse()    
+    return ' '.join(w)  
+
+
+s = input("Введите предложение: ")
+print(r(s))

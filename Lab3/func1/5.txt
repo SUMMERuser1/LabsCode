@@ -1,0 +1,11 @@
+def p(s, l=0):
+    if l == len(s) - 1:
+        print(''.join(s))
+    else:
+        for i in range(l, len(s)):
+            s[l], s[i] = s[i], s[l]  
+            p(s, l + 1)  
+            s[l], s[i] = s[i], s[l]  
+
+s = input("Введите строку: ")
+p(list(s))

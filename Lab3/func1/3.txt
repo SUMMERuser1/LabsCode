@@ -1,0 +1,15 @@
+def solve(heads, legs):
+    for chickens in range(heads + 1):
+        rabbits = heads - chickens
+        if 2 * chickens + 4 * rabbits == legs:
+            return chickens, rabbits
+    return None, None
+
+heads = int(input("количество голов: "))
+legs = int(input("количество ног: "))
+
+chickens, rabbits = solve(heads, legs)
+if chickens is not None:
+    print(f"Количество кур: {chickens}, Количество кроликов: {rabbits}")
+else:
+    print("Нет решения.")

@@ -1,0 +1,64 @@
+import random
+
+movies = [
+    {"name": "Usual Suspects", "imdb": 7.0, "category": "Thriller"},
+    {"name": "Hitman", "imdb": 6.3, "category": "Action"},
+    {"name": "Dark Knight", "imdb": 9.0, "category": "Adventure"},
+    {"name": "The Help", "imdb": 8.0, "category": "Drama"},
+    {"name": "The Choice", "imdb": 6.2, "category": "Romance"},
+  
+]
+
+def check_imdb_score():
+    i = float(input("Enter IMDB score to check (above 5.5): "))
+    print("Score is above 5.5:", i > 5.5)
+
+def filter_movies_by_score():
+    print("Movies with IMDB score above 5.5:")
+    f = [m for m in movies if m['imdb'] > 5.5]
+    for m in f:
+        print(m['name'])
+
+def filter_movies_by_category():
+    c = input("Enter movie category to filter: ").lower()
+    f = [m for m in movies if m['category'].lower() == c]
+    print(f"Movies in category {c}:")
+    for m in f:
+        print(m['name'])
+
+def average_imdb():
+    a = sum(m['imdb'] for m in movies) / len(movies)
+    print(f"Average IMDB score of all movies: {a:.2f}")
+
+def average_imdb_category():
+    c = input("Enter category for average IMDB score: ").lower()
+    f = [m for m in movies if m['category'].lower() == c]
+    if f:
+        a = sum(m['imdb'] for m in f) / len(f)
+        print(f"Average IMDB score for category {c}: {a:.2f}")
+    else:
+        print(f"No movies found in category {c}")
+
+def main():
+    print("Choose an option:")
+    print("1. Check if an IMDB score is above 5.5")
+    print("2. List movies with an IMDB score above 5.5")
+    print("3. List movies by category")
+    print("4. Calculate average IMDB score of all movies")
+    print("5. Calculate average IMDB score by category")
+    o = input("Enter option: ")
+
+    if o == '1':
+        check_imdb_score()
+    elif o == '2':
+        filter_movies_by_score()
+    elif o == '3':
+        filter_movies_by_category()
+    elif o == '4':
+        average_imdb()
+    elif o == '5':
+        average_imdb_category()
+    else:
+        print("Invalid option")
+
+main()

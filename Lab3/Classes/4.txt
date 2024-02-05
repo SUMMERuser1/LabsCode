@@ -1,0 +1,33 @@
+import math
+
+class Point:
+    def __init__(self, x=0, y=0):
+        self.x = x
+        self.y = y
+
+    def show(self):
+        print(f"Координаты точки: ({self.x}, {self.y})")
+
+    def move(self, new_x, new_y):
+        self.x = new_x
+        self.y = new_y
+        print(f"Новые координаты точки: ({self.x}, {self.y})")
+
+    def dist(self, other):
+        return math.sqrt((self.x - other.x) ** 2 + (self.y - other.y) ** 2)
+
+if __name__ == "__main__":
+    x1, y1 = map(int, input("координаты первой точки (x y): ").split())
+    point1 = Point(x1, y1)
+
+    x2, y2 = map(int, input("координаты второй точки (x y): ").split())
+    point2 = Point(x2, y2)
+    
+    point1.show()
+    point2.show()
+
+    new_x, new_y = map(int, input(" новые координаты первой точки (x y): ").split())
+    point1.move(new_x, new_y)
+    
+    distance = point1.dist(point2)
+    print(f"Расстояние между точками после изменения: {distance:.2f}")

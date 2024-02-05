@@ -1,0 +1,7 @@
+def h(l):
+    for i in l:
+        print('*' * i)
+
+
+l = list(map(int, input(" числа для гистограммы, разделенные пробелом: ").split()))
+h(l)

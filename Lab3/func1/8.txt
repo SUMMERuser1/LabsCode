@@ -1,0 +1,11 @@
+def spy_game(n):
+    c = [0, 0, 7, 'x'] 
+    for i in n:
+        if i == c[0]:  
+            c.pop(0)  
+    return len(c) == 1 
+
+
+n = list(map(int, input("список чисел, разделенных пробелом: ").split()))
+
+print(spy_game(n))

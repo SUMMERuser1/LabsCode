@@ -1,0 +1,9 @@
+def u(l):
+    n = []
+    for i in l:
+        if i not in n:
+            n.append(i)
+    return n
+
+l = list(map(int, input("элементы списка, разделенные пробелом: ").split()))
+print("Уникальные элементы:", u(l))
