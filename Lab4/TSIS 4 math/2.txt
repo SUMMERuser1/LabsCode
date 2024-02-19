@@ -1,0 +1,16 @@
+import math
+
+
+def area_of_trap(a, b, h):
+    return ((a + b) / 2) * h
+
+
+a = float(input("Input base1: "))
+b = float(input("Input base2: "))
+h = float(input("Input height: "))
+
+
+S = area_of_trap(a, b, h)
+
+
+print("output area:", S)

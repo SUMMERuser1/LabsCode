@@ -1,0 +1,10 @@
+from datetime import datetime
+
+
+d1 = datetime(2023, 1, 1)
+d2 = datetime(2023, 1, 5)
+
+
+diff_sec = (d2 - d1).total_seconds()
+
+print("Difference in Seconds:", diff_sec)

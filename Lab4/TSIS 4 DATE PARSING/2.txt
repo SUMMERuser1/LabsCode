@@ -1,0 +1,10 @@
+from datetime import datetime, timedelta
+
+
+t = datetime.now()
+y = t - timedelta(days=1)
+tm = t + timedelta(days=1)
+
+print("Yesterday:", y.strftime('%Y-%m-%d'))
+print("Today:", t.strftime('%Y-%m-%d'))
+print("Tomorrow:", tm.strftime('%Y-%m-%d'))

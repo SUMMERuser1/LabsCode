@@ -1,0 +1,14 @@
+import math
+
+def area_of_par(l, h):
+    return l * h  # Correct formula for area calculation
+
+
+l = float(input("Length of base: "))
+h = float(input("Height of parallelogram: "))
+
+# Calculating the area
+area = area_of_par(l, h)  # No need to cast to float again, result is already float
+
+# Printing the area
+print("Area:", area)

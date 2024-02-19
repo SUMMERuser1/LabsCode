@@ -1,0 +1,11 @@
+def ev_num(n):
+    for i in range(n+1):
+        if i % 2 == 0:
+            yield i
+
+n = int(input("Enter n: "))
+
+ev = [str(num) for num in ev_num(n)]
+
+
+print(",".join(ev))

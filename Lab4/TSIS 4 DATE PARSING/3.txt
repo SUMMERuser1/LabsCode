@@ -1,0 +1,8 @@
+from datetime import datetime
+
+now = datetime.now()
+
+now_no_us = now.replace(microsecond=0)
+
+print("With Microseconds:", now)
+print("Without Microseconds:", now_no_us)
