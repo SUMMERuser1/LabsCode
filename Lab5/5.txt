@@ -1,0 +1,8 @@
+import re
+
+text = input("Enter your text: ")
+pattern = 'a.*b$'
+if re.search(pattern, text):
+    print('Match found')
+else:
+    print('Match not found')
