@@ -1,0 +1,10 @@
+def all_true(t):
+    return all(t)
+
+user_input = input("Enter elements of the tuple separated by space (True or False): ")
+t = tuple(user_input.title().split()) 
+
+
+t = tuple(map(lambda x: x == 'True', t))
+
+print(all_true(t))

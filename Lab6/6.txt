@@ -1,0 +1,10 @@
+import string
+import os
+
+def generate_text_files(directory):
+    for letter in string.ascii_uppercase:
+        with open(os.path.join(directory, f"{letter}.txt"), "w") as file:
+            file.write(f"This is file {letter}.txt")
+
+directory = r"C:\Users\Lenovo\Desktop\LabsCode\Lab6"
+generate_text_files(directory)

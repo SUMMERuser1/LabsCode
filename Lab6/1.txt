@@ -1,0 +1,19 @@
+import os
+
+def list_directories_files(path):
+    directories = []
+    files = []
+    
+    for entry in os.listdir(path):
+        full_path = os.path.join(path, entry)
+        if os.path.isdir(full_path):
+            directories.append(entry)
+        elif os.path.isfile(full_path):
+            files.append(entry)
+    
+    return directories, files
+
+path = r"C:\Users\Lenovo\Desktop\LabsCode\Lab6"
+directories, files = list_directories_files(path)
+print("Directories:", directories)
+print("Files:", files)

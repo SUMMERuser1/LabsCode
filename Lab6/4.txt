@@ -1,0 +1,8 @@
+def count_lines(file_path):
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+    return len(lines)
+
+
+file_path = r"C:\Users\Lenovo\Desktop\LabsCode\Lab6\example.txt"
+print("Number of lines:", count_lines(file_path))

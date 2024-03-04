@@ -1,0 +1,9 @@
+def copy_file(source, destination):
+    with open(source, 'r') as src:
+        data = src.read()
+    with open(destination, 'w') as dest:
+        dest.write(data)
+
+source = r"C:\Users\Lenovo\Desktop\LabsCode\Lab6\example.txt"
+destination = r"C:\Users\Lenovo\Desktop\LabsCode\Lab6\copy_of_example.txt"
+copy_file(source, destination)

@@ -1,0 +1,11 @@
+import os
+
+def delete_file(path):
+    if os.path.exists(path) and os.access(path, os.W_OK):
+        os.remove(path)
+        print(f"File {path} has been deleted.")
+    else:
+        print("File does not exist or is not writable.")
+
+path = r"C:\Users\Lenovo\Desktop\LabsCode\Lab6\example.txt"
+delete_file(path)

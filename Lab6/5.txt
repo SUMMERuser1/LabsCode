@@ -1,0 +1,9 @@
+def write_list_to_file(file_path, my_list):
+    with open(file_path, 'w') as file:
+        for item in my_list:
+            file.write(f"{item}\n")
+
+
+my_list = ["Line 1", "Line 2", "Line 3"]
+file_path = r"C:\Users\Lenovo\Desktop\LabsCode\Lab6\example.txt"
+write_list_to_file(file_path, my_list)
