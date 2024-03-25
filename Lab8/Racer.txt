@@ -1,0 +1,62 @@
+import pygame
+import random
+
+pygame.init()
+
+
+screen_width = 800
+screen_height = 600
+screen = pygame.display.set_mode((screen_width, screen_height))
+
+
+black = (0, 0, 0)
+yellow = (255, 255, 0)
+
+
+coin_size = 20
+coin_position = [random.randrange(50, screen_width - 50), -50]  
+player_position = [screen_width // 2, screen_height - 100]
+player_size = 50
+score = 0
+
+
+player_rect = pygame.Rect(player_position[0], player_position[1], player_size, player_size)
+coin_rect = pygame.Rect(coin_position[0], coin_position[1], coin_size, coin_size)
+
+
+font = pygame.font.SysFont(None, 35)
+
+clock = pygame.time.Clock()
+running = True
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    
+    coin_position[1] += 5  
+    if coin_position[1] > screen_height: 
+        coin_position = [random.randrange(50, screen_width - 50), -50]
+
+  
+    coin_rect.update(coin_position[0], coin_position[1], coin_size, coin_size)
+
+
+    if player_rect.colliderect(coin_rect):
+        score += 1  
+        coin_position = [random.randrange(50, screen_width - 50), -50] 
+
+  
+    screen.fill(black)
+    pygame.draw.rect(screen, yellow, player_rect)  # Draw player
+    pygame.draw.rect(screen, yellow, coin_rect)  # Draw coin
+
+  
+    text = font.render(f"Score: {score}", True, yellow)
+    screen.blit(text, [screen_width - 150, 10])
+
+    pygame.display.flip()
+    clock.tick(30)
+
+pygame.quit()

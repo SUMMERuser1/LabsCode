@@ -1,0 +1,94 @@
+import pygame
+import sys
+
+
+pygame.init()
+
+
+screen_width = 800
+screen_height = 600
+screen = pygame.display.set_mode((screen_width, screen_height))
+
+
+black = (0, 0, 0)
+white = (255, 255, 255)
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
+
+
+brush_color = black
+brush_size = 5
+current_tool = 'brush'
+
+
+drawing = False
+last_pos = None
+
+
+colors = [black, white, red, green, blue]
+tools = ['brush', 'rectangle', 'circle', 'eraser']
+tool_rects = []
+color_rects = []
+
+
+for i, color in enumerate(colors):
+    rect = pygame.Rect(10 + i*30, 10, 20, 20)
+    color_rects.append((rect, color))
+
+
+for i, tool in enumerate(tools):
+    rect = pygame.Rect(10, 40 + i*30, 80, 20)
+    tool_rects.append((rect, tool))
+
+def draw_ui():
+    for rect, color in color_rects:
+        pygame.draw.rect(screen, color, rect)
+    for rect, tool in tool_rects:
+        pygame.draw.rect(screen, white, rect)
+        text_surface = font.render(tool, True, black)
+        screen.blit(text_surface, (rect.x + 5, rect.y + 5))
+
+def handle_drawing(event):
+    global last_pos, drawing, current_tool, brush_color
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.button == 1:  # Left click
+            drawing = True
+            last_pos = event.pos
+            for rect, color in color_rects:
+                if rect.collidepoint(event.pos):
+                    brush_color = color
+            for rect, tool in tool_rects:
+                if rect.collidepoint(event.pos):
+                    current_tool = tool
+    elif event.type == pygame.MOUSEBUTTONUP:
+        if event.button == 1:  # Left click
+            drawing = False
+            last_pos = None
+    elif event.type == pygame.MOUSEMOTION and drawing:
+        if current_tool == 'brush' or current_tool == 'eraser':
+            if current_tool == 'eraser':
+                brush_color = white
+            pygame.draw.line(screen, brush_color, last_pos, event.pos, brush_size)
+            last_pos = event.pos
+
+def main():
+    global screen, brush_color
+    running = True
+    screen.fill(white)
+    font = pygame.font.SysFont(None, 24)
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            handle_drawing(event)
+
+        draw_ui()
+        pygame.display.flip()
+
+    pygame.quit()
+    sys.exit()
+
+if __name__ == "__main__":
+    main()

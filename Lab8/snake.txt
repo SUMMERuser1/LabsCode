@@ -1,0 +1,109 @@
+import pygame
+import random
+
+pygame.init()
+
+
+screen_width = 600
+screen_height = 400
+screen = pygame.display.set_mode((screen_width, screen_height))
+
+
+black = (0, 0, 0)
+green = (0, 255, 0)
+red = (255, 0, 0)
+
+
+cell_size = 20
+snake_pos = [[100, 50], [90, 50], [80, 50]]
+food_pos = [0, 0]
+score = 0
+level = 1
+speed = 10
+
+
+direction = 'RIGHT'
+change_to = direction
+
+
+def place_food():
+    while True:
+        x = random.randrange(1, (screen_width//cell_size)) * cell_size
+        y = random.randrange(1, (screen_height//cell_size)) * cell_size
+        if [x, y] not in snake_pos:
+            return [x, y]
+
+food_pos = place_food()
+
+clock = pygame.time.Clock()
+
+def game_over():
+    pygame.quit()
+    quit()
+
+
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                change_to = 'LEFT'
+            if event.key == pygame.K_RIGHT:
+                change_to = 'RIGHT'
+            if event.key == pygame.K_UP:
+                change_to = 'UP'
+            if event.key == pygame.K_DOWN:
+                change_to = 'DOWN'
+
+
+    if change_to == 'LEFT' and direction != 'RIGHT':
+        direction = 'LEFT'
+    if change_to == 'RIGHT' and direction != 'LEFT':
+        direction = 'RIGHT'
+    if change_to == 'UP' and direction != 'DOWN':
+        direction = 'UP'
+    if change_to == 'DOWN' and direction != 'UP':
+        direction = 'DOWN'
+
+
+    if direction == 'LEFT':
+        snake_pos.insert(0, [snake_pos[0][0] - cell_size, snake_pos[0][1]])
+    if direction == 'RIGHT':
+        snake_pos.insert(0, [snake_pos[0][0] + cell_size, snake_pos[0][1]])
+    if direction == 'UP':
+        snake_pos.insert(0, [snake_pos[0][0], snake_pos[0][1] - cell_size])
+    if direction == 'DOWN':
+        snake_pos.insert(0, [snake_pos[0][0], snake_pos[0][1] + cell_size])
+
+
+    if snake_pos[0] == food_pos:
+        score += 1
+        food_pos = place_food()
+        if score % 3 == 0:  
+            level += 1
+            speed += 5
+    else:
+        snake_pos.pop()
+
+    
+    if snake_pos[0][0] >= screen_width or snake_pos[0][0] < 0 or snake_pos[0][1] >= screen_height or snake_pos[0][1] < 0 or snake_pos[0] in snake_pos[1:]:
+        game_over()
+
+   
+    screen.fill(black)
+    for pos in snake_pos:
+        pygame.draw.rect(screen, green, pygame.Rect(pos[0], pos[1], cell_size, cell_size))
+    pygame.draw.rect(screen, red, pygame.Rect(food_pos[0], food_pos[1], cell_size, cell_size))
+
+ 
+    font = pygame.font.SysFont(None, 35)
+    score_text = font.render(f"Score: {score} Level: {level}", True, green)
+    screen.blit(score_text, [0, 0])
+
+    pygame.display.update()
+    clock.tick(speed)
+
+pygame.quit()

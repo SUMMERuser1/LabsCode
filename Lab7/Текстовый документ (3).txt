@@ -1,0 +1,53 @@
+import pygame
+import sys
+import os
+
+pygame.mixer.init()
+pygame.init()
+
+screen_size = (400, 300)
+screen = pygame.display.set_mode(screen_size)
+pygame.display.set_caption("Music Player")
+
+# Load a list of music files
+music_files = ['song1.mp3', 'song2.mp3', 'song3.mp3']
+current_song_index = 0
+
+def play_song(index):
+    pygame.mixer.music.load(music_files[index])
+    pygame.mixer.music.play()
+
+def stop_song():
+    pygame.mixer.music.stop()
+
+def next_song():
+    global current_song_index
+    current_song_index = (current_song_index + 1) % len(music_files)
+    play_song(current_song_index)
+
+def prev_song():
+    global current_song_index
+    current_song_index = (current_song_index - 1) % len(music_files)
+    play_song(current_song_index)
+
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_p:
+                play_song(current_song_index)
+            elif event.key == pygame.K_s:
+                stop_song()
+            elif event.key == pygame.K_n:
+                next_song()
+            elif event.key == pygame.K_b:
+                prev_song()
+
+    screen.fill((255, 255, 255))
+    pygame.display.flip()
+    pygame.time.Clock().tick(30)
+
+pygame.quit()
+sys.exit()

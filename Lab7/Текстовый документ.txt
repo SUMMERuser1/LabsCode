@@ -1,0 +1,76 @@
+import pygame
+import sys
+from datetime import datetime
+import math
+
+
+pygame.init()
+
+
+screen_size = (1024, 768)
+screen = pygame.display.set_mode(screen_size)
+pygame.display.set_caption("Mickey Clock")
+
+
+mickey_clock_image = pygame.image.load('mickeyclock.jpeg')
+
+
+clock_center = (screen_size[0]//2, screen_size[1]//2)
+
+
+def rotate_image(image, angle, pos, originPos):
+    # Calculate the axis aligned bounding box of the rotated image
+    w, h = image.get_size()
+    box = [pygame.math.Vector2(p) for p in [(0, 0), (w, 0), (w, -h), (0, -h)]]
+    box_rotate = [p.rotate(angle) for p in box]
+    min_box = (min(box_rotate, key=lambda p: p[0])[0], min(box_rotate, key=lambda p: p[1])[1])
+    max_box = (max(box_rotate, key=lambda p: p[0])[0], max(box_rotate, key=lambda p: p[1])[1])
+
+  
+    pivot = pygame.math.Vector2(originPos[0], -originPos[1])
+    pivot_rotate = pivot.rotate(angle)
+    pivot_move = pivot_rotate - pivot
+
+  
+    origin = (originPos[0] - min_box[0], originPos[1] - max_box[1])
+    size = (max_box[0] - min_box[0], max_box[1] - min_box[1])
+
+
+    rotated_image = pygame.Surface(size, pygame.SRCALPHA)
+    rotated_image.blit(image, origin)
+    rotated_image = pygame.transform.rotate(rotated_image, angle)
+
+
+    pos = (pos[0] + min_box[0], pos[1] - max_box[1])
+
+    return rotated_image, pos
+
+
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+  
+    screen.fill((255, 255, 255))
+
+    
+    screen.blit(mickey_clock_image, (0, 0))
+
+
+    now = datetime.now()
+    minutes = now.minute
+    seconds = now.second
+
+    minutes_angle = 6 * minutes  
+    seconds_angle = 6 * seconds  
+
+       pygame.display.flip()
+
+   
+    pygame.time.Clock().tick(60)
+
+
+pygame.quit()
+sys.exit()

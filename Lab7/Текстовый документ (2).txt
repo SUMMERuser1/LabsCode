@@ -1,0 +1,51 @@
+import pygame
+import sys
+
+pygame.init()
+
+
+screen_size = (800, 600)
+screen = pygame.display.set_mode(screen_size)
+pygame.display.set_caption("Move the Red Ball")
+
+
+ball_color = (255, 0, 0)  
+ball_radius = 25
+ball_position = [screen_size[0]//2, screen_size[1]//2] 
+ball_movement = 20
+
+
+def draw_ball(screen, color, position, radius):
+    pygame.draw.circle(screen, color, position, radius)
+
+
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP and ball_position[1] - ball_radius > ball_movement:
+                ball_position[1] -= ball_movement
+            elif event.key == pygame.K_DOWN and ball_position[1] + ball_radius < screen_size[1] - ball_movement:
+                ball_position[1] += ball_movement
+            elif event.key == pygame.K_LEFT and ball_position[0] - ball_radius > ball_movement:
+                ball_position[0] -= ball_movement
+            elif event.key == pygame.K_RIGHT and ball_position[0] + ball_radius < screen_size[0] - ball_movement:
+                ball_position[0] += ball_movement
+
+    
+    screen.fill((255, 255, 255))
+
+   ]
+    draw_ball(screen, ball_color, ball_position, ball_radius)
+
+   
+    pygame.display.flip()
+
+    
+    pygame.time.Clock().tick(60)
+
+
+pygame.quit()
+sys.exit()
