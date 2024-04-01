@@ -1,14 +1,11 @@
 import pygame
 import sys
 
-
 pygame.init()
-
 
 screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
-
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -16,26 +13,27 @@ red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
 
-
 brush_color = black
+last_brush_color = black
 brush_size = 5
 current_tool = 'brush'
 
-
 drawing = False
 last_pos = None
-
+current_pos = None
 
 colors = [black, white, red, green, blue]
 tools = ['brush', 'rectangle', 'circle', 'eraser']
 tool_rects = []
 color_rects = []
 
+font = pygame.font.SysFont(None, 24)
+
+drawings = []
 
 for i, color in enumerate(colors):
     rect = pygame.Rect(10 + i*30, 10, 20, 20)
     color_rects.append((rect, color))
-
 
 for i, tool in enumerate(tools):
     rect = pygame.Rect(10, 40 + i*30, 80, 20)
@@ -49,34 +47,65 @@ def draw_ui():
         text_surface = font.render(tool, True, black)
         screen.blit(text_surface, (rect.x + 5, rect.y + 5))
 
+def draw_on_screen():
+    for drawing in drawings:
+        if drawing['tool'] in ['brush', 'eraser']:
+            if len(drawing['points']) > 1:
+                pygame.draw.lines(screen, drawing['color'], False, drawing['points'], drawing['size'])
+        elif drawing['tool'] == 'rectangle':
+            if len(drawing['points']) > 1:
+                start_pos, end_pos = drawing['points'][0], drawing['points'][-1]
+                rect = pygame.Rect(start_pos, (end_pos[0] - start_pos[0], end_pos[1] - start_pos[1]))
+                pygame.draw.rect(screen, drawing['color'], rect, drawing['size'])
+        elif drawing['tool'] == 'circle':
+            if len(drawing['points']) > 1:
+                start_pos, end_pos = drawing['points'][0], drawing['points'][-1]
+                radius = int(((end_pos[0] - start_pos[0]) ** 2 + (end_pos[1] - start_pos[1]) ** 2) ** 0.5)
+                pygame.draw.circle(screen, drawing['color'], start_pos, radius, drawing['size'])
+
 def handle_drawing(event):
-    global last_pos, drawing, current_tool, brush_color
+    global last_pos, drawing, current_tool, brush_color, last_brush_color, current_pos, drawings
     if event.type == pygame.MOUSEBUTTONDOWN:
-        if event.button == 1:  # Left click
+        if event.button == 1:
             drawing = True
             last_pos = event.pos
+            current_pos = event.pos
             for rect, color in color_rects:
                 if rect.collidepoint(event.pos):
-                    brush_color = color
+                    if current_tool != 'eraser':
+                        brush_color = color
+                        last_brush_color = color
+                    return
             for rect, tool in tool_rects:
                 if rect.collidepoint(event.pos):
                     current_tool = tool
+                    if tool == 'eraser':
+                        brush_color = white
+                    else:
+                        brush_color = last_brush_color
+                    return
+            drawings.append({'tool': current_tool, 'color': brush_color, 'points': [event.pos], 'size': brush_size})
     elif event.type == pygame.MOUSEBUTTONUP:
-        if event.button == 1:  # Left click
+        if event.button == 1:
             drawing = False
+            if current_tool in ['rectangle', 'circle']:
+                drawings[-1]['points'].append(event.pos)
             last_pos = None
+            current_pos = None
     elif event.type == pygame.MOUSEMOTION and drawing:
-        if current_tool == 'brush' or current_tool == 'eraser':
-            if current_tool == 'eraser':
-                brush_color = white
-            pygame.draw.line(screen, brush_color, last_pos, event.pos, brush_size)
-            last_pos = event.pos
+        current_pos = event.pos
+        if current_tool in ['brush', 'eraser']:
+            drawings[-1]['points'].append(event.pos)
+        elif current_tool in ['rectangle', 'circle']:
+            if len(drawings[-1]['points']) == 1:
+                drawings[-1]['points'].append(event.pos)
+            else:
+                drawings[-1]['points'][-1] = event.pos
 
 def main():
-    global screen, brush_color
+    global screen, brush_color, drawings
     running = True
     screen.fill(white)
-    font = pygame.font.SysFont(None, 24)
 
     while running:
         for event in pygame.event.get():
@@ -84,6 +113,8 @@ def main():
                 running = False
             handle_drawing(event)
 
+        screen.fill(white) 
+        draw_on_screen()
         draw_ui()
         pygame.display.flip()
 

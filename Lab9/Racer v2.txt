@@ -9,15 +9,20 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 
 black = (0, 0, 0)
 yellow = (255, 255, 0)
+red = (255, 0, 0)  # Color for the enemy
 
 coin_size = 20
 coin_position = [random.randrange(50, screen_width - 50), -50]
+coin_weight = random.choice([1, 2, 3])
 player_position = [screen_width // 2, screen_height - 100]
 player_size = 50
 score = 0
 
 player_rect = pygame.Rect(player_position[0], player_position[1], player_size, player_size)
 coin_rect = pygame.Rect(coin_position[0], coin_position[1], coin_size, coin_size)
+enemy_position = [random.randrange(50, screen_width - 50), 0]
+enemy_size = [40, 50]
+enemy_rect = pygame.Rect(enemy_position[0], enemy_position[1], enemy_size[0], enemy_size[1])
 
 font = pygame.font.SysFont(None, 35)
 
@@ -39,17 +44,27 @@ while running:
 
     coin_position[1] += 5
     if coin_position[1] > screen_height:
-        running = False
+        running = False  # Stop the game if a coin is not collected
     
     coin_rect.update(coin_position[0], coin_position[1], coin_size, coin_size)
 
+    enemy_position[1] += 5
+    if enemy_position[1] > screen_height:
+        enemy_position = [random.randrange(50, screen_width - 50), -50]
+    
+    enemy_rect.update(enemy_position[0], enemy_position[1], enemy_size[0], enemy_size[1])
+
     if player_rect.colliderect(coin_rect):
-        score += 1
+        score += coin_weight
         coin_position = [random.randrange(50, screen_width - 50), -50]
 
+    if player_rect.colliderect(enemy_rect):
+        running = False  # Stop the game if the player faces an enemy
+
     screen.fill(black)
-    pygame.draw.rect(screen, yellow, player_rect)  
-    pygame.draw.rect(screen, yellow, coin_rect)  
+    pygame.draw.rect(screen, yellow, player_rect)
+    pygame.draw.rect(screen, yellow, coin_rect)
+    pygame.draw.rect(screen, red, enemy_rect)
 
     text = font.render(f"Score: {score}", True, yellow)
     screen.blit(text, [screen_width - 150, 10])

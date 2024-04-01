@@ -37,7 +37,7 @@ while running:
     
     screen.fill((255, 255, 255))
 
-   ]
+   
     draw_ball(screen, ball_color, ball_position, ball_radius)
 
    

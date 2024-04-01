@@ -9,8 +9,11 @@ screen_size = (400, 300)
 screen = pygame.display.set_mode(screen_size)
 pygame.display.set_caption("Music Player")
 
-# Load a list of music files
-music_files = ['song1.mp3', 'song2.mp3', 'song3.mp3']
+music_files = [
+    "C:\\Users\\Lenovo\\Downloads\\motivational-electronic-distant-132919.mp3",
+    "C:\\Users\\Lenovo\\Downloads\\4-islamic-background-sounds-no-copyright-music-126058.mp3",
+    "C:\\Users\\Lenovo\\Downloads\\tvari-tokyo-cafe-159065.mp3"
+]
 current_song_index = 0
 
 def play_song(index):
