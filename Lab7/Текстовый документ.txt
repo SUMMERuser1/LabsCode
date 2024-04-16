@@ -1,59 +1,62 @@
 import pygame
 import sys
-from datetime import datetime
 import math
+from datetime import datetime
 
+# Инициализация 
 pygame.init()
 
-screen_size = (1024, 768)
-screen = pygame.display.set_mode(screen_size)
-pygame.display.set_caption("Mickey Clock")
+# Настройки окна
+size = width, height = 400, 400
+screen = pygame.display.set_mode(size)
+pygame.display.set_caption('часы на Pygame')
+clock = pygame.time.Clock()
 
-mickey_clock_image = pygame.image.load('mickeyclock.jpeg')
-clock_center = (screen_size[0]//2, screen_size[1]//2)
+# Определение цветов
+black = (0, 0, 0)
+white = (255, 255, 255)
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
 
-def rotate_image(image, angle, pos, originPos):
-   
-    w, h = image.get_size()
-    box = [pygame.math.Vector2(p) for p in [(0, 0), (w, 0), (w, -h), (0, -h)]]
-    box_rotate = [p.rotate(angle) for p in box]
-    min_box = (min(box_rotate, key=lambda p: p[0])[0], min(box_rotate, key=lambda p: p[1])[1])
-    max_box = (max(box_rotate, key=lambda p: p[0])[0], max(box_rotate, key=lambda p: p[1])[1])
+# Функция для рисования стрелок
+def draw_hand(angle, length, color):
+    # Преобразование угла в радианы и корректировка направления вращения
+    angle = math.radians(angle - 90)  # Угол поворачиваем на 90 градусов, чтобы 0 градусов было сверху
+    end_x = width / 2 + math.cos(angle) * length
+    end_y = height / 2 + math.sin(angle) * length  # Используем +, так как ось Y инвертирована
+    pygame.draw.line(screen, color, (width / 2, height / 2), (end_x, end_y), 2)
 
-    pivot = pygame.math.Vector2(originPos[0], -originPos[1])
-    pivot_rotate = pivot.rotate(angle)
-    pivot_move = pivot_rotate - pivot
-
-    origin = (originPos[0] - min_box[0], originPos[1] - max_box[1])
-    size = (max_box[0] - min_box[0], max_box[1] - min_box[1])
-
-    rotated_image = pygame.Surface(size, pygame.SRCALPHA)
-    rotated_image.blit(image, origin)
-    rotated_image = pygame.transform.rotate(rotated_image, angle)
-
-    pos = (pos[0] + min_box[0], pos[1] - max_box[1])
-
-    return rotated_image, pos
-
+# Главный цикл программы
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill((255, 255, 255))
-    screen.blit(mickey_clock_image, (0, 0))
+    # Заполнение фона
+    screen.fill(black)
 
+    # Получение текущего времени
     now = datetime.now()
-    minutes = now.minute
-    seconds = now.second
+    hour = now.hour % 12 + now.minute / 60
+    minute = now.minute + now.second / 60
+    second = now.second
 
-    minutes_angle = 6 * minutes
-    seconds_angle = 6 * seconds
+    # Расчет углов для стрелок
+    hour_angle = (hour / 12) * 360
+    minute_angle = (minute / 60) * 360
+    second_angle = (second / 60) * 360
+
+    # Рисование стрелок
+    draw_hand(hour_angle, 70, red)    # Часовая стрелка
+    draw_hand(minute_angle, 90, green) # Минутная стрелка
+    draw_hand(second_angle, 110, blue) # Секундная стрелка
 
     pygame.display.flip()
 
-    pygame.time.Clock().tick(60)
+    # Ограничение кадров в секунду
+    clock.tick(60)
 
 pygame.quit()
 sys.exit()

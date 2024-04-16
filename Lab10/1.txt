@@ -1,0 +1,96 @@
+import csv
+import psycopg2
+
+
+def connect_db():
+    """ Connects to the specified PostgreSQL database. """
+    return psycopg2.connect(dbname='PhoneBook', user='postgres', password='admin', port = '5432')
+
+def create_table():
+    """ Creates a phonebook table if it does not exist. """
+    with connect_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS phonebook (
+                    id SERIAL PRIMARY KEY,
+                    first_name VARCHAR(100),
+                    last_name VARCHAR(100),
+                    phone_number VARCHAR(15) UNIQUE NOT NULL,
+                    email VARCHAR(100)
+                );
+            """)
+            print("Table created successfully.")
+            conn.commit()
+
+def insert_from_csv(file_path):
+    """ Inserts multiple entries from a CSV file into the phonebook. """
+    with connect_db() as conn:
+        with conn.cursor() as cur:
+            with open(file_path, 'r') as f:
+                reader = csv.reader(f)
+                next(reader)  # Skip the header row if present
+                for row in reader:
+                    cur.execute("INSERT INTO phonebook (first_name, last_name, phone_number, email) VALUES (%s, %s, %s, %s) ON CONFLICT (phone_number) DO NOTHING", row)
+            conn.commit()
+            print("Data inserted from CSV successfully.")
+
+def insert_from_console():
+    """ Inserts a single entry from console input into the phonebook. """
+    first_name = input("Enter first name: ")
+    last_name = input("Enter last name: ")
+    phone_number = input("Enter phone number: ")
+    email = input("Enter email (optional, press Enter to skip): ")
+    with connect_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO phonebook (first_name, last_name, phone_number, email) VALUES (%s, %s, %s, %s) ON CONFLICT (phone_number) DO NOTHING",
+                        (first_name, last_name, phone_number, email or None))
+            conn.commit()
+            print("Data inserted from console successfully.")
+
+def update_data(phone_number, new_first_name=None, new_phone=None):
+    """ Updates contact details in the phonebook. """
+    with connect_db() as conn:
+        with conn.cursor() as cur:
+            if new_first_name:
+                cur.execute("UPDATE phonebook SET first_name = %s WHERE phone_number = %s", (new_first_name, phone_number))
+            if new_phone:
+                cur.execute("UPDATE phonebook SET phone_number = %s WHERE phone_number = %s", (new_phone, phone_number))
+            conn.commit()
+            print("Data updated successfully.")
+
+def query_data(first_name=None, phone_number=None):
+    """ Queries contacts by first name or phone number. """
+    with connect_db() as conn:
+        with conn.cursor() as cur:
+            query = "SELECT * FROM phonebook WHERE TRUE"
+            params = []
+            if first_name:
+                query += " AND first_name = %s"
+                params.append(first_name)
+            if phone_number:
+                query += " AND phone_number = %s"
+                params.append(phone_number)
+            cur.execute(query, params)
+            results = cur.fetchall()
+            for result in results:
+                print(result)
+
+def delete_data(first_name=None, phone_number=None):
+    """ Deletes contacts by first name or phone number. """
+    with connect_db() as conn:
+        with conn.cursor() as cur:
+            if first_name:
+                cur.execute("DELETE FROM phonebook WHERE first_name = %s", (first_name,))
+            if phone_number:
+                cur.execute("DELETE FROM phonebook WHERE phone_number = %s", (phone_number,))
+            conn.commit()
+            print("Data deleted successfully.")
+
+if __name__ == "__main__":
+    create_table()
+#     # Uncomment the next lines as needed to perform actions
+#     # insert_from_csv('path_to_your_csv.csv')
+    insert_from_console()
+    update_data('123-456-7890', new_first_name='Alice')
+    query_data(first_name='Alice')
+
